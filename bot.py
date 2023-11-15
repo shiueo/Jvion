@@ -40,7 +40,7 @@ bot.color_cancel = int(config["color_cancel"], 16)
 bot.owners = config["owners"]
 bot.reservations = {}
 
-logger = logging.getLogger("HoiMP Bot")
+logger = logging.getLogger("Jvion")
 logger.setLevel(logging.INFO)
 
 console_handler = logging.StreamHandler()
