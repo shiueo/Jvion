@@ -1,7 +1,12 @@
+import os
+import platform
+
 import discord
 
 from discord.ext import commands
 from discord.ext.commands import Context
+
+from utils.footer import add_standard_footer
 
 
 class General(commands.Cog, name="general"):

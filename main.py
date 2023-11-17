@@ -31,6 +31,8 @@ bot = Bot(
 
 bot.config = config
 bot.abs_path = os.path.dirname(__file__)
+bot.prefix = config["prefix"]
+bot.bot_description = config["bot_description"]
 
 bot.start_time = time.time()
 bot.color_main = int(config["color_main"], 16)

@@ -5,6 +5,8 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Context
 
+from utils.footer import add_standard_footer
+
 
 class DiscordUtil(commands.Cog, name="Discord Utils"):
     def __init__(self, bot):
@@ -25,14 +27,10 @@ class DiscordUtil(commands.Cog, name="Discord Utils"):
     @discord_util.command(name="avatar", description="지정된 유저의 pfp를 가져옵니다.")
     async def avatar(self, context: Context, member: discord.Member):
         embed = discord.Embed(
-            title=f"{member.display_name}'s pfp",
-            color=self.bot.color_main
+            title=f"{member.display_name}'s pfp", color=self.bot.color_main
         )
         embed.set_image(url=member.avatar.url)
-        embed.set_footer(
-            text=f"command requested by {context.author.display_name}\n{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}",
-            icon_url=context.author.avatar.url
-        )
+        embed = add_standard_footer(context, embed)
         await context.send(embed=embed)
 
 
