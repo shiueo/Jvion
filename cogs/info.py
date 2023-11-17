@@ -30,6 +30,7 @@ class Info(commands.Cog, name="info"):
     @commands.command(name="about", description="Information about the bot.")
     async def about(self, context: Context):
         embed = discord.Embed(
+            title="Jvion",
             description=f"{self.bot.bot_description}",
             color=self.bot.color_main,
         )

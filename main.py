@@ -5,29 +5,30 @@ import platform
 import random
 import sys
 import time
-import discord
+
+import discord as discord
+
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
+
 from utils.json_util import json_open
 from utils.utils_logger import LoggingFormatter
 
-# Check if config file exists
 if not os.path.isfile("config.json"):
     sys.exit("config.json이 없습니다. 확인해주세요.")
 else:
-    config = json_open("config.json")
+    config = json_open(
+        "config.json",
+    )
 
-# Set up Discord intents
 intents = discord.Intents.all()
 
-# Create the bot instance
 bot = Bot(
     command_prefix=commands.when_mentioned_or(config["prefix"]),
     intents=intents,
     help_command=None,
 )
 
-# Set up bot properties
 bot.config = config
 bot.abs_path = os.path.dirname(__file__)
 bot.prefix = config["prefix"]
@@ -40,13 +41,11 @@ bot.color_success = int(config["color_success"], 16)
 bot.color_cancel = int(config["color_cancel"], 16)
 bot.owners = config["owners"]
 
-# Set up logger
 logger = logging.getLogger("Jvion")
 logger.setLevel(logging.INFO)
 
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(LoggingFormatter())
-
 # File handler
 file_handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
 file_handler_formatter = logging.Formatter(
@@ -59,7 +58,6 @@ logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 bot.logger = logger
 
-# Create the 'database' directory if it doesn't exist
 if not os.path.isdir("./database"):
     os.mkdir("./database")
 
