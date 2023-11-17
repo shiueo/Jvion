@@ -12,22 +12,22 @@ class DiscordUtil(commands.Cog, name="Discord Utils"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_group(
+    @commands.group(
         name="discord_utils",
-        description="디스코드 전용 여러 툴들",
+        description="Various tools for Discord.",
     )
     async def discord_util(self, context: Context) -> None:
         if context.invoked_subcommand is None:
             embed = discord.Embed(
-                description="서브 커맨드를 정확히 확인해주세요.",
+                description="Please check the invoked subcommand.",
                 color=self.bot.color_cancel,
             )
             await context.send(embed=embed)
 
-    @discord_util.command(name="avatar", description="지정된 유저의 pfp를 가져옵니다.")
+    @discord_util.command(name="avatar", description="Get the specified user's profile picture.")
     async def avatar(self, context: Context, member: discord.Member):
         embed = discord.Embed(
-            title=f"{member.display_name}'s pfp", color=self.bot.color_main
+            title=f"{member.display_name}'s profile picture", color=self.bot.color_main
         )
         embed.set_image(url=member.avatar.url)
         embed = add_standard_footer(context, embed)
