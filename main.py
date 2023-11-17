@@ -147,5 +147,5 @@ async def status_task():
     await bot.change_presence(activity=discord.Game(random.choice(statuses)))
 
 
-# Use bot.run() directly without asyncio.run()
+asyncio.run(load_cogs())
 bot.run(config["token"])
