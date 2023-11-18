@@ -12,17 +12,13 @@ class DiscordUtil(commands.Cog, name="Discord Utils"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(
+    @commands.hybrid_group(
         name="discord_utils",
         description="Various tools for Discord.",
     )
     async def discord_util(self, context: Context) -> None:
         if context.invoked_subcommand is None:
-            embed = discord.Embed(
-                description="Please check the invoked subcommand.",
-                color=self.bot.color_cancel,
-            )
-            await context.send(embed=embed)
+            await context.send("Please check the invoked subcommand.")
 
     @discord_util.command(name="avatar", description="Get the specified user's profile picture.")
     async def avatar(self, context: Context, member: discord.Member):

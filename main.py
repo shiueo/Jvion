@@ -1,6 +1,9 @@
 import asyncio
+import datetime
+import json
 import logging
 import os
+import pathlib
 import platform
 import random
 import sys
@@ -11,15 +14,14 @@ import discord as discord
 from discord.ext import commands, tasks
 from discord.ext.commands import Bot, Context
 
-from utils.json_util import json_open
+from utils.fix_twitter import fix_twitter
 from utils.utils_logger import LoggingFormatter
 
 if not os.path.isfile("config.json"):
     sys.exit("config.json이 없습니다. 확인해주세요.")
 else:
-    config = json_open(
-        "config.json",
-    )
+    with open("config.json", encoding="utf8") as f:
+        config = json.load(f)
 
 intents = discord.Intents.all()
 
@@ -47,6 +49,7 @@ logger.setLevel(logging.INFO)
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(LoggingFormatter())
 # File handler
+
 file_handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
 file_handler_formatter = logging.Formatter(
     "[{asctime}] [{levelname:<8}] {name}: {message}", "%Y-%m-%d %H:%M:%S", style="{"
@@ -71,13 +74,20 @@ async def on_ready():
     bot.logger.info("-------------------")
     bot.logger.info("Syncing commands globally...")
     status_task.start()
-    await bot.tree.sync()
+    bot.tree.copy_global_to(guild=discord.Object(id=1074197704596520971))
+    await bot.tree.sync(guild=discord.Object(id=1074197704596520971))
+
+
+async def basic_utils(message: discord.Message, context: Context):
+    await fix_twitter(message, context)
 
 
 @bot.event
 async def on_message(message: discord.Message):
     if message.author == bot.user or message.author.bot:
         return
+    context = await bot.get_context(message)
+    await basic_utils(message, context)
     await bot.process_commands(message)
 
 
@@ -95,16 +105,16 @@ async def on_command_error(context: Context, error):
     elif isinstance(error, commands.MissingPermissions):
         embed = discord.Embed(
             description="You are missing the permission(s) `"
-            + ", ".join(error.missing_permissions)
-            + "` to execute this command!",
+                        + ", ".join(error.missing_permissions)
+                        + "` to execute this command!",
             color=0xE02B2B,
         )
         await context.send(embed=embed)
     elif isinstance(error, commands.BotMissingPermissions):
         embed = discord.Embed(
             description="I am missing the permission(s) `"
-            + ", ".join(error.missing_permissions)
-            + "` to fully perform this command!",
+                        + ", ".join(error.missing_permissions)
+                        + "` to fully perform this command!",
             color=0xE02B2B,
         )
         await context.send(embed=embed)
@@ -123,6 +133,36 @@ async def on_command_completion(context: Context):
         bot.logger.info(
             f"Executed {executed_command} command by {context.author} (ID: {context.author.id}) in DMs"
         )
+
+
+@bot.event
+async def on_reaction_add(reaction, user):
+    if str(reaction.emoji) == "✅" and not user.bot:
+        if reaction.message.id in bot.reservations.keys():
+            role = reaction.message.guild.get_role(
+                bot.reservations[reaction.message.id][1]
+            )
+            if role:
+                await user.add_roles(role)
+    if str(reaction.emoji) == "❌" and not user.bot:
+        if reaction.message.id in bot.reservations.keys():
+            role = reaction.message.guild.get_role(
+                bot.reservations[reaction.message.id][2]
+            )
+            if role in user.roles:
+                del bot.reservations[reaction.message.id]
+                await reaction.message.delete()
+
+
+@bot.event
+async def on_reaction_remove(reaction, user):
+    if str(reaction.emoji) == "✅" and not user.bot:
+        if reaction.message.id in bot.reservations.keys():
+            role = reaction.message.guild.get_role(
+                bot.reservations[reaction.message.id][1]
+            )
+            if role:
+                await user.remove_roles(role)
 
 
 async def load_cogs():
@@ -144,6 +184,8 @@ async def status_task():
     ]
     await bot.change_presence(activity=discord.Game(random.choice(statuses)))
 
+
+allowed_mentions = discord.AllowedMentions(roles=True)
 
 asyncio.run(load_cogs())
 bot.run(config["token"])

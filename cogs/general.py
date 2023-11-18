@@ -13,7 +13,7 @@ class General(commands.Cog, name="general"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="help", description="Show all commands of the bot.")
+    @commands.hybrid_command(name="help", description="Show all commands of the bot.")
     async def help(self, context: Context):
         prefix = self.bot.config["prefix"]
         embed = discord.Embed(

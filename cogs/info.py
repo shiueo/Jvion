@@ -15,17 +15,13 @@ class Info(commands.Cog, name="info"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.group(
+    @commands.hybrid_group(
         name="info",
         description="Commands to provide information about the bot.",
     )
     async def info(self, context: Context) -> None:
         if context.invoked_subcommand is None:
-            embed = discord.Embed(
-                description="Please check the invoked subcommand.",
-                color=self.bot.color_cancel,
-            )
-            await context.send(embed=embed)
+            await context.send("Please check the invoked subcommand.")
 
     @commands.command(name="about", description="Information about the bot.")
     async def about(self, context: Context):
