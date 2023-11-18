@@ -28,4 +28,4 @@ async def fix_twitter(message: discord.Message, context: Context):
             await context.send(f"{context.author.mention}: {modified_content}")
 
         except discord.Forbidden:
-            await context.send("I don't have the permission to delete messages.")
+            await context.send("FixTwitter - I don't have the permission to delete messages.")
