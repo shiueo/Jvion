@@ -19,14 +19,21 @@ class Twitter(commands.Cog, name="twitter"):
         if context.invoked_subcommand is None:
             await context.send("Please check the invoked subcommand.")
 
-    @twitter.command(name="fix", description="Fixes a Twitter URL by replacing 'twitter.com' or 'x.com' with 'fxtwitter.com'.")
+    @twitter.command(
+        name="fix",
+        description="Fixes a Twitter URL by replacing 'twitter.com' or 'x.com' with 'fxtwitter.com'.",
+    )
     async def twitter_embed(self, context: Context, twitter_url: str):
         if is_valid_twitter_url(twitter_url):
-            modified_url = twitter_url.replace("twitter.com", "fxtwitter.com").replace("x.com", "fxtwitter.com")
+            modified_url = twitter_url.replace("twitter.com", "fxtwitter.com").replace(
+                "x.com", "fxtwitter.com"
+            )
 
             await context.send(modified_url)
         else:
-            await context.send("Invalid Twitter URL. Please provide a valid Twitter URL.")
+            await context.send(
+                "Invalid Twitter URL. Please provide a valid Twitter URL."
+            )
 
 
 async def setup(bot):

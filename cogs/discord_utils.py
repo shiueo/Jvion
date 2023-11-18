@@ -20,7 +20,9 @@ class DiscordUtil(commands.Cog, name="Discord Utils"):
         if context.invoked_subcommand is None:
             await context.send("Please check the invoked subcommand.")
 
-    @discord_util.command(name="avatar", description="Get the specified user's profile picture.")
+    @discord_util.command(
+        name="avatar", description="Get the specified user's profile picture."
+    )
     async def avatar(self, context: Context, member: discord.Member):
         embed = discord.Embed(
             title=f"{member.display_name}'s profile picture", color=self.bot.color_main

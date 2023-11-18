@@ -78,16 +78,12 @@ async def on_ready():
     await bot.tree.sync(guild=discord.Object(id=1074197704596520971))
 
 
-async def basic_utils(message: discord.Message, context: Context):
-    await fix_twitter(message, context)
-
-
 @bot.event
 async def on_message(message: discord.Message):
     if message.author == bot.user or message.author.bot:
         return
     context = await bot.get_context(message)
-    await basic_utils(message, context)
+    await fix_twitter(message, context)
     await bot.process_commands(message)
 
 
@@ -105,16 +101,16 @@ async def on_command_error(context: Context, error):
     elif isinstance(error, commands.MissingPermissions):
         embed = discord.Embed(
             description="You are missing the permission(s) `"
-                        + ", ".join(error.missing_permissions)
-                        + "` to execute this command!",
+            + ", ".join(error.missing_permissions)
+            + "` to execute this command!",
             color=0xE02B2B,
         )
         await context.send(embed=embed)
     elif isinstance(error, commands.BotMissingPermissions):
         embed = discord.Embed(
             description="I am missing the permission(s) `"
-                        + ", ".join(error.missing_permissions)
-                        + "` to fully perform this command!",
+            + ", ".join(error.missing_permissions)
+            + "` to fully perform this command!",
             color=0xE02B2B,
         )
         await context.send(embed=embed)
