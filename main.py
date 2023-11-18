@@ -74,8 +74,11 @@ async def on_ready():
     bot.logger.info("-------------------")
     bot.logger.info("Syncing commands globally...")
     status_task.start()
+    """
     bot.tree.copy_global_to(guild=discord.Object(id=1074197704596520971))
     await bot.tree.sync(guild=discord.Object(id=1074197704596520971))
+    """
+    await bot.tree.sync()
 
 
 @bot.event
